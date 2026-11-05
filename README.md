@@ -1,4 +1,5 @@
 # Zona Móvil — Prototipo Vue
+Somos E-Waste Software, un equipo de estudiantes de la UTU cursando nuestro proyecto final de Bachillerato en Informática. Desarrollamos una plataforma web orientada a optimizar la gestión comercial y la visibilidad digital de Zona Móbil, un local de accesorios para celulares, fusionando el comercio electrónico con prácticas sustentables. El código y el desarrollo de este proyecto se rigen bajo los términos de una licencia personalizada, detallada en el archivo Licencia.txt del repositorio.
 
 Proyecto Vite + Vue 3 con el prototipo de Zona Móvil, con **Vue Router** (rutas
 reales por página) y **Pinia** (estado del carrito y el pago).
@@ -9,8 +10,10 @@ reales por página) y **Pinia** (estado del carrito y el pago).
 ## Cómo correrlo
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
+pnpm add chart.js vue-chartjs
+pnpm i apexcharts
 ```
 
 Abrí la URL que te muestra la terminal (normalmente http://localhost:5173).
