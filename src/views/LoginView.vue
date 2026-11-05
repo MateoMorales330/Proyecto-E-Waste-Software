@@ -1,0 +1,72 @@
+<template>
+  <div class="auth-shell">
+    <div class="auth-side"></div>
+    <div class="auth-card">
+      <router-link class="modal-close" :to="{name:'inicio'}">✕</router-link>
+      <h1>Iniciar sesión</h1>
+      <form @submit.prevent="iniciarSesion">
+      <div class="auth-field"><label>Correo electrónico:</label><input v-model="form.email" type="email" autocomplete="email" required></div>
+      <div class="auth-field">
+        <label>Contraseña:</label>
+        <input v-model="form.password" :type="verClave ? 'text':'password'" autocomplete="current-password" required>
+        <button class="toggle-pass" :class="{activo: verClave}" type="button" :aria-pressed="verClave" :aria-label="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'" :title="verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'" @click="verClave=!verClave">👁️</button>
+      </div>
+      <button type="button" class="auth-forgot" @click="mostrarAyudaClave = !mostrarAyudaClave">Olvidé mi contraseña</button>
+      <p v-if="mostrarAyudaClave" class="imagen-nota" style="font-size:13px;">
+        Por ahora no hay recuperación automática: escribinos a
+        <a href="mailto:contacto@zonamovil.com">contacto@zonamovil.com</a> y te ayudamos a recuperar tu cuenta.
+      </p>
+      <p v-if="error" class="auth-error">{{ error }}</p>
+      <button class="auth-submit" type="submit" :disabled="cargando">{{ cargando ? 'Ingresando...' : 'Ingresar' }}</button>
+      </form>
+      <div class="auth-switch">En cambio... <router-link :to="{name:'registro'}">Registrarse</router-link></div>
+    </div>
+    <div class="auth-side"></div>
+  </div>
+</template>
+
+<script>
+import apiClient from '../Api/api.js';
+
+export default {
+  name: 'LoginView',
+  data() {
+    return {
+      verClave: false,
+      mostrarAyudaClave: false,
+      cargando: false,
+      error: '',
+      form: { email: '', password: '' }
+    };
+  },
+  methods: {
+    async iniciarSesion() {
+      this.error = '';
+
+      this.cargando = true;
+      try {
+        // El backend decide si la cuenta es de administrador según el email
+        // (fantasma, dueño real o cliente).
+        const response = await apiClient.post('/usuarios/login', {
+          email: this.form.email,
+          password: this.form.password,
+          tipo: 'usuario'
+        });
+        const usuario = response.data.data;
+        localStorage.setItem('auth_token', response.data.token);
+        localStorage.setItem('auth_user', JSON.stringify({
+          ...usuario,
+          role: usuario.role || 'usuario',
+          tipo: usuario.tipo || 'usuario'
+        }));
+        const esAdmin = usuario.ghost === true || String(usuario.role || usuario.tipo || 'usuario').toLowerCase() === 'dueño';
+        await this.$router.push(esAdmin ? { name: 'admin-panel' } : { name: 'inicio' });
+      } catch (error) {
+        this.error = error.response?.data?.message || 'No se pudo iniciar sesión.';
+      } finally {
+        this.cargando = false;
+      }
+    }
+  }
+};
+</script>

@@ -1,0 +1,10 @@
+/* Estilos globales del sitio, separados por sección en src/styles/.
+   El ORDEN de estos @import importa: cuando dos reglas empatan, gana la
+   que viene después. Por eso responsive va último. */
+@import './styles/base.css';
+@import './styles/tienda.css';
+@import './styles/carrito-pago.css';
+@import './styles/cuenta.css';
+@import './styles/admin.css';
+@import './styles/animaciones.css';
+@import './styles/responsive.css';
